@@ -5,6 +5,7 @@ Darkstar Project
 Welcome to the DarkStar project, an emulation server for FFXI.
 Visit our forums and IRC to keep in touch with the latest developments.
 
+**Roadmap:** https://trello.com/b/hBZnfihW
 **Forums:** https://forums.dspt.info/index.php
 
 **IRC Channel**
@@ -31,6 +32,7 @@ Commits should contain a descriptive name for what you are modifying
 
 Remember to check back for any feedback, and drop a comment once requested changes have been made (if there are any).
 
+Also, rip out your tab key OR have your editor insert 4 spaces on indent/instead of tab character.
 
 Please *test your code* before committing changes/submitting a pull request.
 

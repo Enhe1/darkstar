@@ -139,7 +139,7 @@ void CAIPetDummy::ActionAbilityStart()
                 for (auto&& skillid : MobSkills)
                 {
                     auto PMobSkill = battleutils::GetMobSkill(skillid);
-                    if (PMobSkill && luautils::OnMobSkillCheck(m_PBattleTarget, m_PPet, PMobSkill) != 0)
+                    if (PMobSkill && luautils::OnMobSkillCheck(m_PBattleTarget, m_PPet, PMobSkill) == 0)
                     {
                         SetCurrentMobSkill(PMobSkill);
                         break;
@@ -495,7 +495,16 @@ void CAIPetDummy::ActionAbilityFinish() {
     uint16 totalTargets = m_PTargetFind->m_targets.size();
     //call the script for each monster hit
     m_PMobSkill->setTotalTargets(totalTargets);
+
+    float bonusTP = m_PPet->getMod(MOD_TP_BONUS);
+
+    if( bonusTP + m_skillTP > 300 )
+       m_skillTP = 300;
+    else
+       m_skillTP += bonusTP;
+
     m_PMobSkill->setTP(m_skillTP);
+    m_PMobSkill->setHPP(m_PPet->GetHPP());
 
     // TODO: this is totally a hack
     // override mob animation ids with valid pet animation id

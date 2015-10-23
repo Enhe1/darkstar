@@ -417,7 +417,7 @@ function calculateMagicHitRate(magicacc, magiceva, percentBonus, casterLvl, targ
     --add a scaling bonus or penalty based on difference of targets level from caster
     local levelDiff = utils.clamp(casterLvl - targetLvl, -5, 5);
 
-    p = 50 - 0.5 * (magiceva - magicacc) + levelDiff * 2 + percentBonus;
+    p = 70 - 0.5 * (magiceva - magicacc) + levelDiff * 3 + percentBonus;
 
     -- printf("P: %f, macc: %f, meva: %f, bonus: %d%%, leveldiff: %d", p, magicacc, magiceva, percentBonus, levelDiff);
 
@@ -618,7 +618,7 @@ end;
 
     if (dmg > 0) then
         dmg = dmg - target:getMod(MOD_PHALANX);
-        utils.clamp(dmg, 0, 99999);
+        dmg = utils.clamp(dmg, 0, 99999);
     end
 
     --handling stoneskin
@@ -647,7 +647,7 @@ function finalMagicNonSpellAdjustments(caster,target,ele,dmg)
 
     if (dmg > 0) then
         dmg = dmg - target:getMod(MOD_PHALANX);
-        utils.clamp(dmg, 0, 99999);
+        dmg = utils.clamp(dmg, 0, 99999);
     end
 
     --handling stoneskin
@@ -805,7 +805,13 @@ function addBonuses(caster, spell, target, dmg, bonusmab)
 		-- print(mabbonus);
     else
         local mab = caster:getMod(MOD_MATT) + bonusmab;
-        if (spell:getElement() > 0 and spell:getElement() <= 6) then
+
+        local mab_crit = caster:getMod(MOD_MAGIC_CRITHITRATE);
+        if( math.random(1,100) < mab_crit ) then
+           mab = mab + ( 10 + caster:getMod(MOD_MAGIC_CRIT_DMG_INCREASE ) );
+        end
+
+        if (spell:getElement() > 0 and spell:getElement() <= 6 ) then
             mab = mab + caster:getMerit(blmMerit[spell:getElement()]);
         end
         mabbonus = (100 + mab) / (100 + target:getMod(MOD_MDEF));
@@ -1223,17 +1229,10 @@ function outputMagicHitRateInfo()
 
             if(targetLvl >= 0) then
                 -- assume BLM spell, A+
-                local magicAcc = utils.getSkillLvl(1, casterLvl);
+                local magicAcc = utils.getSkillLvl(6, casterLvl);
                 -- assume default monster magic eva, D
-                local magicEvaRank = 7;
-
-                if(targetLvl > 50) then
-                    magicEvaRank = 4;
-                elseif(targetLvl > 35) then
-                    magicEvaRank = 5;
-                elseif(targetLvl > 25) then
-                    magicEvaRank = 6;
-                end
+                local magicEvaRank = 3;
+                local rate = 0;
 
                 local magicEva = utils.getMobSkillLvl(magicEvaRank, targetLvl);
 
